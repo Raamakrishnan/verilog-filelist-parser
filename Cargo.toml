@@ -1,5 +1,5 @@
 [package]
-name = "sv-dot-f-parser"
+name = "sv-filelist-parser"
 version = "0.1.0"
 authors = ["Raamakrishnan <raamakrishnan1997@gmail.com>"]
 edition = "2018"
