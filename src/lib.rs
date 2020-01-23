@@ -1,12 +1,13 @@
 use std::collections::HashMap;
 
 #[derive(PartialEq, Debug)]
-enum LineType <'a> {
+enum LineType<'a> {
     File(&'a str),
     IncDir(Vec<&'a str>),
     Define(HashMap<&'a str, &'a str>),
     Filelist(&'a str),
-    Unknown,
+    Comment,
+    // Unknown,
 }
 
 fn parse_line<'a>(line: &'a str) -> LineType<'a> {
@@ -28,8 +29,11 @@ fn parse_line<'a>(line: &'a str) -> LineType<'a> {
         let incdirs = line.trim_start_matches("+incdir+").trim_end_matches("+");
         let incdir_vec: Vec<&str> = incdirs.split("+").collect();
         return LineType::IncDir(incdir_vec);
+    } else if line.starts_with("//") {
+        return LineType::Comment;
     } else {
-        return LineType::Unknown;
+        // Mark everything else as a File
+        return LineType::File(line);
     }
 }
 
@@ -71,8 +75,23 @@ mod test {
     #[test]
     fn parse_line_incdir_multiple() {
         let line = "+incdir+../sample_dir1/sample_dir2+../sample_dir2/sample_dir3+sample_dir4/sample_dir5+\n";
-        let incdir_vec = vec!["../sample_dir1/sample_dir2", "../sample_dir2/sample_dir3", 
-            "sample_dir4/sample_dir5"];
+        let incdir_vec = vec![
+            "../sample_dir1/sample_dir2",
+            "../sample_dir2/sample_dir3",
+            "sample_dir4/sample_dir5",
+        ];
         assert_eq!(parse_line(line), LineType::IncDir(incdir_vec));
+    }
+
+    #[test]
+    fn parse_line_comment() {
+        let line = "//random_comment";
+        assert_eq!(parse_line(line), LineType::Comment);
+    }
+
+    #[test]
+    fn parse_line_file() {
+        let line = "any_random_line_is_a_file";
+        assert_eq!(parse_line(line), LineType::File("any_random_line_is_a_file"));
     }
 }
