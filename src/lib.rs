@@ -10,30 +10,30 @@ enum LineType<'a> {
     // Unknown,
 }
 
-fn parse_line<'a>(line: &'a str) -> LineType<'a> {
+fn parse_line(line: &str) -> LineType {
     let line = line.trim();
     if line.starts_with("-f ") {
         let filelist_name = line.trim_start_matches("-f ");
-        return LineType::Filelist(filelist_name);
+        LineType::Filelist(filelist_name)
     } else if line.starts_with("+define+") {
         // remove +define+ from start and "+" from end
-        let defines = line.trim_start_matches("+define+").trim_end_matches("+");
+        let defines = line.trim_start_matches("+define+").trim_end_matches('+');
         let mut define_map = HashMap::new();
-        for define in defines.split("+") {
-            let split: Vec<&str> = define.splitn(2, "=").collect();
+        for define in defines.split('+') {
+            let split: Vec<&str> = define.splitn(2, '=').collect();
             define_map.insert(split[0], split[1]);
         }
-        return LineType::Define(define_map);
+        LineType::Define(define_map)
     } else if line.starts_with("+incdir+") {
         // remove +incdir+ from start and "+" from end
-        let incdirs = line.trim_start_matches("+incdir+").trim_end_matches("+");
-        let incdir_vec: Vec<&str> = incdirs.split("+").collect();
-        return LineType::IncDir(incdir_vec);
+        let incdirs = line.trim_start_matches("+incdir+").trim_end_matches('+');
+        let incdir_vec: Vec<&str> = incdirs.split('+').collect();
+        LineType::IncDir(incdir_vec)
     } else if line.starts_with("//") {
-        return LineType::Comment;
+        LineType::Comment
     } else {
         // Mark everything else as a File
-        return LineType::File(line);
+        LineType::File(line)
     }
 }
 
