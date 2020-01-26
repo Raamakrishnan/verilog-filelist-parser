@@ -5,12 +5,11 @@ use std::fs;
 use crate::line_parser;
 use crate::line_parser::LineType;
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug, Default)]
 pub struct Filelist {
     pub files: Vec<String>,
     pub incdirs: Vec<String>,
     pub defines: HashMap<String, String>,
-
     pub comments_present: bool,
 }
 
@@ -22,6 +21,13 @@ impl Filelist {
             defines: HashMap::new(),
             comments_present: false,
         }
+    }
+
+    pub fn extend(&mut self, other: Filelist) {
+        self.files.extend(other.files);
+        self.incdirs.extend(other.incdirs);
+        self.defines.extend(other.defines);
+        self.comments_present |= other.comments_present;
     }
 }
 
@@ -44,7 +50,9 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
                 }
             }
             LineType::Comment => filelist.comments_present = true,
-            _ => {}
+            LineType::Filelist(path) => {
+                filelist.extend(parse_file(path)?);
+            },
         }
     }
     Ok(filelist)
