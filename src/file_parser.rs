@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
+use regex::Regex;
 
 use crate::line_parser;
 use crate::line_parser::LineType;
@@ -37,7 +38,8 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
     let mut filelist = Filelist::new();
 
     for line in contents.lines() {
-        match line_parser::parse_line(line) {
+        let line = replace_env_vars(&line);
+        match line_parser::parse_line(&line) {
             LineType::File(file) => filelist.files.push(file.to_string()),
             LineType::Define(define_map) => {
                 for define in define_map.into_iter() {
@@ -56,4 +58,24 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
         }
     }
     Ok(filelist)
+}
+
+fn replace_env_vars(line: &str) -> String {
+    let re_env_brace = Regex::new(r"\$\{(?P<env>[^}]+)\}").unwrap();
+    let re_env_paren = Regex::new(r"\$\((?P<env>[^)]+)\)").unwrap();
+
+    let mut expanded_line = String::from(line);
+    for caps in re_env_brace.captures_iter(&line) {
+        let env = &caps["env"];
+        if let Ok(env_var) = std::env::var(env) {
+            expanded_line = expanded_line.replace(&format!("${{{}}}", env), &env_var);
+        }
+    }
+    for caps in re_env_paren.captures_iter(&line) {
+        let env = &caps["env"];
+        if let Ok(env_var) = std::env::var(env) {
+            expanded_line = expanded_line.replace(&format!("$({})", env), &env_var);
+        }
+    }
+    expanded_line
 }
