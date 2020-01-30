@@ -4,7 +4,7 @@ use std::collections::HashMap;
 pub enum LineType<'a> {
     File(&'a str),
     IncDir(Vec<&'a str>),
-    Define(HashMap<&'a str, &'a str>),
+    Define(HashMap<&'a str, Option<&'a str>>),
     Filelist(&'a str),
     Comment,
     // Unknown,
@@ -20,8 +20,12 @@ pub fn parse_line(line: &str) -> LineType {
         let defines = line.trim_start_matches("+define+").trim_end_matches('+');
         let mut define_map = HashMap::new();
         for define in defines.split('+') {
-            let split: Vec<&str> = define.splitn(2, '=').collect();
-            define_map.insert(split[0], split[1]);
+            if let Some(pos) = define.find("=") {
+                let (d, t) = define.split_at(pos);
+                define_map.insert(d, Some(&t[1..]));
+            } else {
+                define_map.insert(define, None);
+            }
         }
         LineType::Define(define_map)
     } else if line.starts_with("+incdir+") {
@@ -49,19 +53,21 @@ mod test {
 
     #[test]
     fn parse_line_define_single() {
-        let line = "+define+CONST1=const1=23\n";
+        let line = "+define+CONST1=const1=23+\n";
         let mut define_map = HashMap::new();
-        define_map.insert("CONST1", "const1=23");
+        define_map.insert("CONST1", Some("const1=23"));
         assert_eq!(parse_line(line), LineType::Define(define_map));
     }
 
     #[test]
     fn parse_line_define_multiple() {
-        let line = "+define+CONST1=const1+CONST2=const2+CONST3=const3=1+\n";
+        let line = "+define+CONST1=const1+CONST2=const2+CONST3=const3=1+CONST4+CONST5+\n";
         let mut define_map = HashMap::new();
-        define_map.insert("CONST1", "const1");
-        define_map.insert("CONST2", "const2");
-        define_map.insert("CONST3", "const3=1");
+        define_map.insert("CONST1", Some("const1"));
+        define_map.insert("CONST2", Some("const2"));
+        define_map.insert("CONST3", Some("const3=1"));
+        define_map.insert("CONST4", None);
+        define_map.insert("CONST5", None);
         assert_eq!(parse_line(line), LineType::Define(define_map));
     }
 

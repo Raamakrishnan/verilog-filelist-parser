@@ -4,12 +4,12 @@ use std::collections::HashMap;
 #[test]
 fn simple_test() {
     let mut defines = HashMap::new();
-    defines.insert("a".to_string(), "bad".to_string());
-    defines.insert("e".to_string(), "f".to_string());
-    defines.insert("c".to_string(), "d".to_string());
-    defines.insert("ENV_VAR1".to_string(), "var1".to_string());
-    defines.insert("ENV_VAR2".to_string(), "var2".to_string());
-
+    defines.insert("a".to_string(), Some("bad".to_string()));
+    defines.insert("e".to_string(), Some("f".to_string()));
+    defines.insert("c".to_string(), Some("d".to_string()));
+    defines.insert("ENV_VAR1".to_string(), Some("var1".to_string()));
+    defines.insert("ENV_VAR2".to_string(), Some("var2".to_string()));
+    defines.insert("RTL".to_string(), None);
 
     let filelist_exp = sv_filelist_parser::Filelist {
         files : vec!["testcase/file1.sv".to_string(),

@@ -10,7 +10,7 @@ use crate::line_parser::LineType;
 pub struct Filelist {
     pub files: Vec<String>,
     pub incdirs: Vec<String>,
-    pub defines: HashMap<String, String>,
+    pub defines: HashMap<String, Option<String>>,
     pub comments_present: bool,
 }
 
@@ -42,8 +42,11 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
         match line_parser::parse_line(&line) {
             LineType::File(file) => filelist.files.push(file.to_string()),
             LineType::Define(define_map) => {
-                for define in define_map.into_iter() {
-                    filelist.defines.insert(define.0.to_string(), define.1.to_string());
+                for (d, t) in define_map.into_iter() {
+                    match t {
+                        Some(text) => filelist.defines.insert(d.to_string(), Some(text.to_string())),
+                        None => filelist.defines.insert(d.to_string(), None)
+                    };
                 }
             },
             LineType::IncDir(incdirs) => {
