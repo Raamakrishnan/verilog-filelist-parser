@@ -28,6 +28,6 @@ fn simple_test() {
     std::env::set_var("VAR1", "ENV_VAR1");
     std::env::set_var("VAR2", "ENV_VAR2");
 
-    let filelist = sv_filelist_parser::parse("testcase/files.f").expect("Error parsing");
+    let filelist = sv_filelist_parser::parse_file("testcase/files.f").expect("Error parsing");
     assert_eq!(filelist_exp, filelist);
 }
