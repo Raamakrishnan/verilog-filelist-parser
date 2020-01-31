@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
+use std::path::PathBuf;
 use regex::Regex;
 
 use crate::line_parser;
@@ -8,8 +9,8 @@ use crate::line_parser::LineType;
 
 #[derive(PartialEq, Debug, Default)]
 pub struct Filelist {
-    pub files: Vec<String>,
-    pub incdirs: Vec<String>,
+    pub files: Vec<PathBuf>,
+    pub incdirs: Vec<PathBuf>,
     pub defines: HashMap<String, Option<String>>,
     pub comments_present: bool,
 }
@@ -40,7 +41,7 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
     for line in contents.lines() {
         let line = replace_env_vars(&line);
         match line_parser::parse_line(&line) {
-            LineType::File(file) => filelist.files.push(file.to_string()),
+            LineType::File(file) => filelist.files.push(PathBuf::from(file)),
             LineType::Define(define_map) => {
                 for (d, t) in define_map.into_iter() {
                     match t {
@@ -51,7 +52,7 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
             },
             LineType::IncDir(incdirs) => {
                 for dir in incdirs {
-                    filelist.incdirs.push(dir.to_string());
+                    filelist.incdirs.push(PathBuf::from(dir));
                 }
             }
             LineType::Comment => filelist.comments_present = true,

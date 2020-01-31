@@ -1,5 +1,6 @@
 use sv_filelist_parser;
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 #[test]
 fn simple_test() {
@@ -12,11 +13,13 @@ fn simple_test() {
     defines.insert("RTL".to_string(), None);
 
     let filelist_exp = sv_filelist_parser::Filelist {
-        files : vec!["testcase/file1.sv".to_string(),
-        "testcase/file2.sv".to_string(),
-        "testcase/file3.sv".to_string(),
-        "testcase/file4.sv".to_string(),],
-        incdirs : vec!["testcase/".to_string()],
+        files : vec![
+            PathBuf::from("testcase/file1.sv"),
+            PathBuf::from("testcase/file2.sv"),
+            PathBuf::from("testcase/file3.sv"),
+            PathBuf::from("testcase/file4.sv"),
+            ],
+        incdirs : vec![PathBuf::from("testcase/")],
         defines : defines,
         comments_present : true
     };
