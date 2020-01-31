@@ -1,8 +1,8 @@
+use regex::Regex;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
-use regex::Regex;
 
 use crate::line_parser;
 use crate::line_parser::LineType;
@@ -45,11 +45,13 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
             LineType::Define(define_map) => {
                 for (d, t) in define_map.into_iter() {
                     match t {
-                        Some(text) => filelist.defines.insert(d.to_string(), Some(text.to_string())),
-                        None => filelist.defines.insert(d.to_string(), None)
+                        Some(text) => filelist
+                            .defines
+                            .insert(d.to_string(), Some(text.to_string())),
+                        None => filelist.defines.insert(d.to_string(), None),
                     };
                 }
-            },
+            }
             LineType::IncDir(incdirs) => {
                 for dir in incdirs {
                     filelist.incdirs.push(PathBuf::from(dir));
@@ -58,7 +60,7 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
             LineType::Comment => filelist.comments_present = true,
             LineType::Filelist(path) => {
                 filelist.extend(parse_file(path)?);
-            },
+            }
         }
     }
     Ok(filelist)

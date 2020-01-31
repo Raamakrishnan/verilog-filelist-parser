@@ -20,7 +20,7 @@ pub fn parse_line(line: &str) -> LineType {
         let defines = line.trim_start_matches("+define+").trim_end_matches('+');
         let mut define_map = HashMap::new();
         for define in defines.split('+') {
-            if let Some(pos) = define.find("=") {
+            if let Some(pos) = define.find('=') {
                 let (d, t) = define.split_at(pos);
                 define_map.insert(d, Some(&t[1..]));
             } else {
@@ -98,6 +98,9 @@ mod test {
     #[test]
     fn parse_line_file() {
         let line = "any_random_line_is_a_file";
-        assert_eq!(parse_line(line), LineType::File("any_random_line_is_a_file"));
+        assert_eq!(
+            parse_line(line),
+            LineType::File("any_random_line_is_a_file")
+        );
     }
 }
