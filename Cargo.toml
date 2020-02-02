@@ -4,8 +4,11 @@ version = "0.1.0"
 authors = ["Raamakrishnan <raamakrishnan1997@gmail.com>"]
 edition = "2018"
 license = "MIT"
-decription = "A library to parse a Verilog Filelist and return a list of files, include directories and defines"
+description = "A library to parse a Verilog Filelist and return a list of files, include directories and defines"
 repository = "https://github.com/Raamakrishnan/verilog-filelist-parser"
+readme = "README.md"
+categories = ["parser-implementations", "parsing", "development-tools"]
+keywords = ["verilog", "systemverilog", "filelist"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
