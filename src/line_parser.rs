@@ -7,7 +7,7 @@ pub enum LineType<'a> {
     Define(HashMap<&'a str, Option<&'a str>>),
     Filelist(&'a str),
     Comment,
-    // Unknown,
+    Unknown,
 }
 
 pub fn parse_line(line: &str) -> LineType {
@@ -35,6 +35,8 @@ pub fn parse_line(line: &str) -> LineType {
         LineType::IncDir(incdir_vec)
     } else if line.starts_with("//") {
         LineType::Comment
+    } else if line.starts_with('-') || line.starts_with('+') {
+        LineType::Unknown
     } else {
         // Mark everything else as a File
         LineType::File(line)
@@ -93,6 +95,18 @@ mod test {
     fn parse_line_comment() {
         let line = "//random_comment";
         assert_eq!(parse_line(line), LineType::Comment);
+    }
+
+    #[test]
+    fn parse_line_unknown_hyphen() {
+        let line = "-funcmd";
+        assert_eq!(parse_line(line), LineType::Unknown);
+    }
+
+    #[test]
+    fn parse_line_unknown_plus() {
+        let line = "+funcmd";
+        assert_eq!(parse_line(line), LineType::Unknown);
     }
 
     #[test]

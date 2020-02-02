@@ -13,6 +13,7 @@ pub struct Filelist {
     pub incdirs: Vec<PathBuf>,
     pub defines: HashMap<String, Option<String>>,
     pub comments_present: bool,
+    pub unknowns_present: bool,
 }
 
 impl Filelist {
@@ -22,6 +23,7 @@ impl Filelist {
             incdirs: Vec::new(),
             defines: HashMap::new(),
             comments_present: false,
+            unknowns_present: false,
         }
     }
 
@@ -30,6 +32,7 @@ impl Filelist {
         self.incdirs.extend(other.incdirs);
         self.defines.extend(other.defines);
         self.comments_present |= other.comments_present;
+        self.unknowns_present |= other.unknowns_present;
     }
 }
 
@@ -58,6 +61,7 @@ pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
                 }
             }
             LineType::Comment => filelist.comments_present = true,
+            LineType::Unknown => filelist.unknowns_present = true,
             LineType::Filelist(path) => {
                 filelist.extend(parse_file(path)?);
             }

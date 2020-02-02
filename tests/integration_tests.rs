@@ -22,6 +22,7 @@ fn simple_test() {
         incdirs: vec![PathBuf::from("testcase/")],
         defines: defines,
         comments_present: true,
+        unknowns_present: false,
     };
 
     // Add env vars
