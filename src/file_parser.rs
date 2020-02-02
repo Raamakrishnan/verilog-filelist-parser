@@ -44,11 +44,14 @@ impl Filelist {
     }
 }
 
-/// Parses a filelist file
-///
+/// Parses a filelist file.
+/// 
+/// Environment variables represented with paranthesis or 
+/// curly braces (i.e. `$()` or `${}`) will be automatically
+/// substituted.
 /// # Arguments
 ///
-/// * `path` - A string slice that is the path to the filelist file
+/// * `path` - A string slice that is the path to the filelist
 ///
 /// # Errors
 ///
