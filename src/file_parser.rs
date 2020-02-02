@@ -7,16 +7,23 @@ use std::path::PathBuf;
 use crate::line_parser;
 use crate::line_parser::LineType;
 
+/// Represents a Verilog Filelist
 #[derive(PartialEq, Debug, Default)]
 pub struct Filelist {
+    /// List of all files
     pub files: Vec<PathBuf>,
+    /// List of all Include Directories
     pub incdirs: Vec<PathBuf>,
+    /// HashMap of all Defines
     pub defines: HashMap<String, Option<String>>,
+    /// True if comments are present in the filelist
     pub comments_present: bool,
+    /// True if unknown arguments are present in the filelist
     pub unknowns_present: bool,
 }
 
 impl Filelist {
+    /// Returns an empty Filelist
     pub fn new() -> Filelist {
         Filelist {
             files: Vec::new(),
@@ -27,6 +34,7 @@ impl Filelist {
         }
     }
 
+    /// Adds the elements of the other filelist to the current filelist
     pub fn extend(&mut self, other: Filelist) {
         self.files.extend(other.files);
         self.incdirs.extend(other.incdirs);
@@ -36,6 +44,16 @@ impl Filelist {
     }
 }
 
+/// Parses a filelist file
+///
+/// # Arguments
+///
+/// * `path` - A string slice that is the path to the filelist file
+///
+/// # Errors
+///
+/// Returns an error if the filelist in `path` cannot be read. Also returns
+/// error if any of the nested filelists cannot be read.
 pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
     let contents = fs::read_to_string(path)?;
 
