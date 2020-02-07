@@ -4,7 +4,7 @@ A library in Rust to parse a Verilog Filelist and return
 a list of files, include directories and defines.
 
 Environment variables represented with paranthesis or 
-curly braces (i.e. $() or ${}) will be automatically
+curly braces (i.e. `$()` or `${}`) will be automatically
 substituted.
 
 # Example

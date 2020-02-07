@@ -2,7 +2,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::line_parser;
 use crate::line_parser::LineType;
@@ -49,15 +49,16 @@ impl Filelist {
 /// Environment variables represented with paranthesis or 
 /// curly braces (i.e. `$()` or `${}`) will be automatically
 /// substituted.
+/// 
 /// # Arguments
 ///
-/// * `path` - A string slice that is the path to the filelist
+/// * `path` - The path to the filelist
 ///
 /// # Errors
 ///
 /// Returns an error if the filelist in `path` cannot be read. Also returns
 /// error if any of the nested filelists cannot be read.
-pub fn parse_file(path: &str) -> Result<Filelist, Box<dyn Error>> {
+pub fn parse_file(path: impl AsRef<Path>) -> Result<Filelist, Box<dyn Error>> {
     let contents = fs::read_to_string(path)?;
 
     let mut filelist = Filelist::new();
