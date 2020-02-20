@@ -8,6 +8,7 @@ pub enum LineType<'a> {
     Filelist(&'a str),
     Comment,
     Unknown,
+    Empty,
 }
 
 pub fn parse_line(line: &str) -> LineType {
@@ -37,6 +38,8 @@ pub fn parse_line(line: &str) -> LineType {
         LineType::Comment
     } else if line.starts_with('-') || line.starts_with('+') {
         LineType::Unknown
+    } else if line.is_empty() {
+        LineType::Empty
     } else {
         // Mark everything else as a File
         LineType::File(line)
@@ -107,6 +110,16 @@ mod test {
     fn parse_line_unknown_plus() {
         let line = "+funcmd";
         assert_eq!(parse_line(line), LineType::Unknown);
+    }
+
+    #[test]
+    fn parse_line_empty() {
+        let line = "";
+        assert_eq!(parse_line(line), LineType::Empty);
+        let line = " ";
+        assert_eq!(parse_line(line), LineType::Empty);
+        let line = "\t";
+        assert_eq!(parse_line(line), LineType::Empty);
     }
 
     #[test]

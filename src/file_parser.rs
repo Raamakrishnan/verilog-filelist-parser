@@ -45,11 +45,11 @@ impl Filelist {
 }
 
 /// Parses a filelist file.
-/// 
-/// Environment variables represented with paranthesis or 
+///
+/// Environment variables represented with paranthesis or
 /// curly braces (i.e. `$()` or `${}`) will be automatically
 /// substituted.
-/// 
+///
 /// # Arguments
 ///
 /// * `path` - The path to the filelist
@@ -84,6 +84,7 @@ pub fn parse_file(path: impl AsRef<Path>) -> Result<Filelist, Box<dyn Error>> {
             }
             LineType::Comment => filelist.comments_present = true,
             LineType::Unknown => filelist.unknowns_present = true,
+            LineType::Empty => (),
             LineType::Filelist(path) => {
                 filelist.extend(parse_file(path)?);
             }
