@@ -59,6 +59,7 @@ impl Filelist {
 /// Returns an error if the filelist in `path` cannot be read. Also returns
 /// error if any of the nested filelists cannot be read.
 pub fn parse_file(path: impl AsRef<Path>) -> Result<Filelist, Box<dyn Error>> {
+    let path = path.as_ref();
     let contents = fs::read_to_string(path)?;
 
     let mut filelist = Filelist::new();
