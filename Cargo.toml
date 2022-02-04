@@ -14,3 +14,4 @@ keywords = ["verilog", "systemverilog", "filelist"]
 
 [dependencies]
 regex = "1.0.0"
+clap = {version = "3.0.14", features = ["derive"]}
