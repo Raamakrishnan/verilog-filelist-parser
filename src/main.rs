@@ -30,8 +30,8 @@ pub fn main() {
         println!("  defines:");
         for (d, t) in filelist.defines {
             match t {
-                None => println!("    - {:?}", d),
-                Some(te) => println!("    - {:?}: {:?}", d, te),
+                None => println!("    {:?}:", d),
+                Some(te) => println!("    {:?}: {:?}", d, te),
             };
         }
     }
