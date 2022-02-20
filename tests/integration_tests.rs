@@ -10,6 +10,7 @@ fn simple_test() {
     defines.insert("c".to_string(), Some("d".to_string()));
     defines.insert("ENV_VAR1".to_string(), Some("var1".to_string()));
     defines.insert("ENV_VAR2".to_string(), Some("var2".to_string()));
+    defines.insert("ENV_VAR3".to_string(), Some("var3".to_string()));
     defines.insert("RTL".to_string(), None);
 
     let filelist_exp = verilog_filelist_parser::Filelist {
@@ -28,6 +29,7 @@ fn simple_test() {
     // Add env vars
     std::env::set_var("VAR1", "ENV_VAR1");
     std::env::set_var("VAR2", "ENV_VAR2");
+    std::env::set_var("VAR3", "ENV_VAR3");
 
     let filelist = verilog_filelist_parser::parse_file("testcase/files.f").expect("Error parsing");
     assert_eq!(filelist_exp, filelist);

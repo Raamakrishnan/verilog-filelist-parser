@@ -97,6 +97,7 @@ pub fn parse_file(path: impl AsRef<Path>) -> Result<Filelist, Box<dyn Error>> {
 fn replace_env_vars(line: &str) -> String {
     let re_env_brace = Regex::new(r"\$\{(?P<env>[^}]+)\}").unwrap();
     let re_env_paren = Regex::new(r"\$\((?P<env>[^)]+)\)").unwrap();
+    let re_env_bare = Regex::new(r"\$(?P<env>[a-zA-Z_][a-zA-Z0-9_]*)").unwrap();
 
     let mut expanded_line = String::from(line);
     for caps in re_env_brace.captures_iter(&line) {
@@ -109,6 +110,12 @@ fn replace_env_vars(line: &str) -> String {
         let env = &caps["env"];
         if let Ok(env_var) = std::env::var(env) {
             expanded_line = expanded_line.replace(&format!("$({})", env), &env_var);
+        }
+    }
+    for caps in re_env_bare.captures_iter(&line) {
+        let env = &caps["env"];
+        if let Ok(env_var) = std::env::var(env) {
+            expanded_line = expanded_line.replace(&format!("${}", env), &env_var);
         }
     }
     expanded_line
