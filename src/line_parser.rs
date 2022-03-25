@@ -34,7 +34,7 @@ pub fn parse_line(line: &str) -> LineType {
         let incdirs = line.trim_start_matches("+incdir+").trim_end_matches('+');
         let incdir_vec: Vec<&str> = incdirs.split('+').collect();
         LineType::IncDir(incdir_vec)
-    } else if line.starts_with("//") {
+    } else if line.starts_with("//") || line.starts_with("#") {
         LineType::Comment
     } else if line.starts_with('-') || line.starts_with('+') {
         LineType::Unknown
